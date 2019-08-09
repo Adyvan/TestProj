@@ -1,18 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
 
 public class ShutterBeh : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+  [SerializeField]
+  private GameObject bulletPrefab;
 
-    // Update is called once per frame
-    void Update()
+  [SerializeField]
+  private float powerShoot = 20;
+
+  private void Awake()
+  {
+    Observable.EveryUpdate()
+   .Where(_ => Input.GetKeyDown(KeyCode.Space))
+   .Subscribe(_ => Shoot())
+   .AddTo(this);
+  }
+
+  private void Shoot()
+  {
+    var bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+
+    var richBody = bullet.GetComponent<Rigidbody>();
+
+    if (richBody != null)
     {
-        
+      richBody.velocity = transform.rotation * Vector3.forward * powerShoot;
     }
+  }
 }
