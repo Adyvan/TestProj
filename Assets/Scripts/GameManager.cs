@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UniRx;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class GameManager : MonoBehaviour
 
 	[SerializeField]
 	private InitTargetBehaviour initTargetBehaviour;
+
+  IDisposable edingGame;
 
   public int countBullet;
   public int CountBullet
@@ -41,7 +44,8 @@ public class GameManager : MonoBehaviour
 	    currentLevelText.text = $"{level}";
       nextLevelText.text = $"{level + 1}";
 			initTargetBehaviour.InitLevel();
-	  }
+      endGameView.SetActive(false);
+    }
   }
 
   public static GameManager Instance { get; private set; }
@@ -59,20 +63,31 @@ public class GameManager : MonoBehaviour
   public void RestartGame()
 	{
 		Level = 1;
-    endGameView.SetActive(false);
   }
 
   public void FinishLevel()
   {
+    if(edingGame != null)
+    {
+      edingGame.Dispose();
+      edingGame = null;
+    }
     Level++;
   }
 
-  private void MakedShoot()
+  public void MakedShoot()
   {
     CountBullet--;
     if(countBullet <= 0)
     {
-      endGameView.SetActive(true);
+      if (edingGame != null)
+      {
+        edingGame.Dispose();
+      }
+      edingGame = Observable.Return(Unit.Default)
+        .Delay(TimeSpan.FromSeconds(2))
+        .Subscribe(_ => endGameView.SetActive(true))
+        .AddTo(this);
     }
   }
 }

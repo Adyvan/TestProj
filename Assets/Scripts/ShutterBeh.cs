@@ -26,14 +26,17 @@ public class ShutterBeh : MonoBehaviour
 
   private void Shoot()
   {
+    if (GameManager.Instance.countBullet <= 0) return;
+
     var bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
 
     var richBody = bullet.GetComponent<Rigidbody>();
-
     if (richBody != null)
     {
       richBody.velocity = transform.rotation * Vector3.forward * powerShoot;
     }
+
+    GameManager.Instance.MakedShoot();
   }
 
   private void RotateAndShoot()

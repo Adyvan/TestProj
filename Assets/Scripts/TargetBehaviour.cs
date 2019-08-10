@@ -27,13 +27,19 @@ public class TargetBehaviour : MonoBehaviour
   {
     if(targetsOnTarget.Count == 0)
     {
-      foreach(var target in targetsOnLevel)
-      {
-        //TODO create buffer for that, do not destroy
-        Destroy(target.gameObject);
-      }
-      targetsOnLevel.Clear();
+      ClearAllTarget();
       GameManager.Instance.FinishLevel();
     }
+  }
+
+  public static void ClearAllTarget()
+  {
+    foreach (var target in targetsOnLevel)
+    {
+      //TODO create buffer for that, do not destroy
+      Destroy(target.gameObject);
+    }
+    targetsOnLevel.Clear();
+    targetsOnTarget.Clear();
   }
 }

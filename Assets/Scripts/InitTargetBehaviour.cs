@@ -11,6 +11,7 @@ public class InitTargetBehaviour : MonoBehaviour
 
   public void InitLevel()
   {
+    TargetBehaviour.ClearAllTarget();
     Instantiate(targetPrefab, targetTransform.transform.position, targetTransform.rotation, targetTransform);
   }
 }
