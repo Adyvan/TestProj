@@ -17,7 +17,7 @@ public class ShutterBeh : MonoBehaviour
     {
       Observable.EveryUpdate()
         .Where(_ => Input.GetMouseButtonDown(0))
-        .Select(_ => Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane)))
+        .Select(_ => Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y + 180, Camera.main.nearClipPlane)))
         .Subscribe(positon => RotateAndShoot(positon))
         .AddTo(this);
     }
@@ -27,7 +27,7 @@ public class ShutterBeh : MonoBehaviour
         .Where(_ => Input.touchCount > 0)
         .Select(_ => Input.GetTouch(0))
         .Where(touch => touch.phase == TouchPhase.Began)
-        .Select(touch => Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane)))
+        .Select(touch => Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y + 180, Camera.main.nearClipPlane)))
         .Subscribe(positon => RotateAndShoot(positon))
         .AddTo(this);
     }
