@@ -13,24 +13,24 @@ public class ShutterBeh : MonoBehaviour
 
   private void Awake()
   {
-    Observable.EveryUpdate()
-      .Where(_ => Input.GetKeyDown(KeyCode.Space))
-      .Subscribe(_ => Shoot())
-      .AddTo(this);
-
-    Observable.EveryUpdate()
-      .Where(_ => Input.GetMouseButtonDown(0))
-      .Select(_=> Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane)))
-      .Subscribe(positon => RotateAndShoot(positon))
-      .AddTo(this);
-
-    Observable.EveryUpdate()
-      .Where(_ => Input.touchCount > 0)
-      .Select(_ => Input.GetTouch(0))
-      .Where(touch => touch.phase == TouchPhase.Began)
-      .Select(touch => Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane)))
-      .Subscribe(positon => RotateAndShoot(positon))
-      .AddTo(this);
+    if (!Input.touchSupported)
+    {
+      Observable.EveryUpdate()
+        .Where(_ => Input.GetMouseButtonDown(0))
+        .Select(_ => Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane)))
+        .Subscribe(positon => RotateAndShoot(positon))
+        .AddTo(this);
+    }
+    else
+    {
+      Observable.EveryUpdate()
+        .Where(_ => Input.touchCount > 0)
+        .Select(_ => Input.GetTouch(0))
+        .Where(touch => touch.phase == TouchPhase.Began)
+        .Select(touch => Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane)))
+        .Subscribe(positon => RotateAndShoot(positon))
+        .AddTo(this);
+    }
   }
 
   private void Shoot()

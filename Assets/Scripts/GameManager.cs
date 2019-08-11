@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
     private set
     {
       level = value;
-			CountBullet = level * 3 + 3;
+			CountBullet = level * 3;
 	    currentLevelText.text = $"{level}";
       nextLevelText.text = $"{level + 1}";
 			initTargetBehaviour.InitLevel();
