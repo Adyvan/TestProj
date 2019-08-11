@@ -20,7 +20,16 @@ public class ShutterBeh : MonoBehaviour
 
     Observable.EveryUpdate()
       .Where(_ => Input.GetMouseButtonDown(0))
-      .Subscribe(_ => RotateAndShoot())
+      .Select(_=> Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane)))
+      .Subscribe(positon => RotateAndShoot(positon))
+      .AddTo(this);
+
+    Observable.EveryUpdate()
+      .Where(_ => Input.touchCount > 0)
+      .Select(_ => Input.GetTouch(0))
+      .Where(touch => touch.phase == TouchPhase.Began)
+      .Select(touch => Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane)))
+      .Subscribe(positon => RotateAndShoot(positon))
       .AddTo(this);
   }
 
@@ -39,9 +48,8 @@ public class ShutterBeh : MonoBehaviour
     GameManager.Instance.MakedShoot();
   }
 
-  private void RotateAndShoot()
+  private void RotateAndShoot(Vector3 pos)
   {
-    var pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane));
     var delta_position = transform.position - Camera.main.gameObject.transform.position;
     pos += delta_position;
     var vector = (pos - transform.position).normalized;
